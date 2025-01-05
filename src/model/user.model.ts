@@ -7,13 +7,13 @@ export interface User extends Document {
   verifyCode: string;
   verifyCodeExpiry: Date;
   isVerified: boolean;
+  oAuthProvider: boolean;
 }
 
 const userSchema: Schema<User> = new Schema({
   username: {
     type: String,
     required: [true, "Username is required"],
-    trim: true,
   },
   email: {
     type: String,
@@ -27,17 +27,27 @@ const userSchema: Schema<User> = new Schema({
   },
   password: {
     type: String,
-    required: [true, "Password is required"],
+    required() {
+      return !this.oAuthProvider; // if there is oauth then becomes false else true
+    },
   },
   verifyCode: {
     type: String,
-    required: [true, "Verify code is required"],
+    required() {
+      return !this.oAuthProvider;
+    },
   },
   verifyCodeExpiry: {
     type: Date,
-    required: [true, "Verify code expiry is required"],
+    required() {
+      return !this.oAuthProvider;
+    },
   },
   isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  oAuthProvider: {
     type: Boolean,
     default: false,
   },

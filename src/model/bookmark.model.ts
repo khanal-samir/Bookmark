@@ -8,44 +8,49 @@ export interface Bookmark extends Document {
   description: string;
   isImportant: boolean;
   folderID: Folder;
+  updatedAt: Date;
+  createdAt: Date;
 }
 
-const bookmarkSchema: Schema<Bookmark> = new Schema({
-  userId: {
-    required: true,
-    type: Schema.Types.ObjectId,
-    ref: "User",
+const bookmarkSchema: Schema<Bookmark> = new Schema(
+  {
+    userId: {
+      required: true,
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    title: {
+      required: [true, "Title is required"],
+      type: String,
+      index: true,
+      unique: true,
+      default: "No title",
+    },
+    url: {
+      required: [true, "URL is required"],
+      unique: true,
+      type: String,
+      match: [
+        /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/,
+        "Please use a valid URL",
+      ],
+    },
+    description: {
+      type: String,
+      unique: true,
+      default: "No Description",
+    },
+    isImportant: {
+      type: Boolean,
+      default: false,
+    },
+    folderID: {
+      type: Schema.Types.ObjectId,
+      ref: "Folder",
+    },
   },
-  title: {
-    required: [true, "Title is required"],
-    type: String,
-    index: true,
-    unique: true,
-    default: "No title",
-  },
-  url: {
-    required: [true, "URL is required"],
-    unique: true,
-    type: String,
-    match: [
-      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/,
-      "Please use a valid URL",
-    ],
-  },
-  description: {
-    type: String,
-    unique: true,
-    default: "No Description",
-  },
-  isImportant: {
-    type: Boolean,
-    default: false,
-  },
-  folderID: {
-    type: Schema.Types.ObjectId,
-    ref: "Folder",
-  },
-});
+  { timestamps: true },
+);
 
 const BookmarkModel =
   (mongoose.models.Bookmark as mongoose.Model<Bookmark>) ||
