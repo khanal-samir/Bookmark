@@ -1,7 +1,6 @@
 import BookmarkModel from "@/model/bookmark.model";
 import getUserId from "@/helpers/getUserId";
 import { ApiResponse } from "@/lib/ApiResponse";
-
 export const GET = async (req: Request): Promise<Response> => {
   try {
     const result = await getUserId();
@@ -33,6 +32,11 @@ export const POST = async (req: Request): Promise<Response> => {
     const userId = result;
     const { title, description, url, isImportant } = await req.json();
 
+    const bookmark = await BookmarkModel.findOne({ title, url, userId });
+    if (bookmark)
+      return ApiResponse.badRequest(
+        "Bookmark with similar title or URL already exists",
+      );
     const newBookmark = await BookmarkModel.create({
       title,
       url,
@@ -60,25 +64,49 @@ export const PATCH = async (req: Request): Promise<Response> => {
   try {
     const result = await getUserId();
     if (result instanceof Response) return result;
-    const userId = result;
-    const { bookmarkId, url, title, description, isImportant } =
-      await req.json();
-    const bookmark = await BookmarkModel.findOneAndUpdate(
-      { userId, _id: bookmarkId },
+    const { bookmarkId, url, title, description } = await req.json();
+    const bookmark = await BookmarkModel.findByIdAndUpdate(
+      bookmarkId,
       {
-        title,
-        url,
-        description,
-        isImportant,
+        $set: {
+          title,
+          url,
+          description,
+        },
       },
-      {
-        new: true,
-      },
+      { new: true },
     );
+    console.log(bookmark);
+    if (!bookmark) return ApiResponse.error("Error while updating bookmark");
     return ApiResponse.success(bookmark, "Bookmark updated successfully");
   } catch (error: any) {
     console.log("Something went wrong while updating bookmark", error.message);
     return ApiResponse.error("Something went wrong while updating bookmark");
+  }
+};
+export const PUT = async (req: Request): Promise<Response> => {
+  try {
+    const result = await getUserId();
+    if (result instanceof Response) return result;
+    const { bookmarkId, isImportant } = await req.json();
+    const bookmark = await BookmarkModel.findByIdAndUpdate(
+      bookmarkId,
+      {
+        $set: {
+          isImportant,
+        },
+      },
+      { new: true },
+    );
+    console.log(bookmark);
+    if (!bookmark)
+      return ApiResponse.error("Error while updating isImportant for bookmark");
+    return ApiResponse.success(bookmark, "Bookmark updated successfully");
+  } catch (error: any) {
+    console.log("Something went wrong while updating bookmark", error.message);
+    return ApiResponse.error(
+      "Something went wrong while updating isImportant for bookmark",
+    );
   }
 };
 
