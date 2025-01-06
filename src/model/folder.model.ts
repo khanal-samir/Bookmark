@@ -22,6 +22,7 @@ const folderSchema: Schema<Folder> = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "Bookmark",
+        default: [],
       },
     ],
     title: {

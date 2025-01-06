@@ -2,8 +2,9 @@ import dbConnect from "@/lib/DbConnect";
 import UserModel from "@/model/user.model";
 import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/helpers/sendEmail";
+import { ApiResponse } from "@/lib/ApiResponse";
 
-export const POST = async (request: Request) => {
+export const POST = async (request: Request): Promise<Response> => {
   await dbConnect();
   try {
     const { username, email, password } = await request.json();
@@ -15,13 +16,7 @@ export const POST = async (request: Request) => {
     });
 
     if (isExistingUsernameVerified) {
-      return Response.json(
-        {
-          success: false,
-          message: "Username is already taken",
-        },
-        { status: 400 },
-      );
+      return ApiResponse.badRequest("Username is already taken");
     }
     // if email is already exisiting
     const isExistingUserByEmail = await UserModel.findOne({ email });
@@ -29,14 +24,7 @@ export const POST = async (request: Request) => {
 
     if (isExistingUserByEmail) {
       if (isExistingUserByEmail.isVerified) {
-        // if verifed
-        return Response.json(
-          {
-            success: false,
-            message: "User already exists with this email",
-          },
-          { status: 400 },
-        );
+        return ApiResponse.badRequest("User already exists with this email");
       } else {
         // not verified
         //update document
@@ -47,6 +35,7 @@ export const POST = async (request: Request) => {
         await isExistingUserByEmail.save();
       }
     } else {
+      //create
       const hashedPassword = await bcrypt.hash(password, 10);
       const expiryDate = new Date(); // becomes object
       expiryDate.setHours(expiryDate.getHours() + 1);
@@ -68,30 +57,17 @@ export const POST = async (request: Request) => {
       verifyCode,
     );
     if (!emailResponse.success) {
-      return Response.json(
-        {
-          success: false,
-          message: emailResponse.message,
-        },
-        { status: 500 },
+      return ApiResponse.error(
+        emailResponse.message || "Someting went wrong while sending email",
       );
     }
-
-    return Response.json(
-      {
-        success: true,
-        message: "User registered successfully. Please verify your account.",
-      },
-      { status: 201 },
-    );
+    return new ApiResponse(
+      201,
+      null,
+      "User registered successfully. Please verify your account.",
+    ).send();
   } catch (error) {
     console.log("Error registering User", error);
-    return Response.json(
-      {
-        success: false,
-        message: "Error registering user",
-      },
-      { status: 500 },
-    );
+    return new ApiResponse(500, null, "Error registering user").send();
   }
 };
