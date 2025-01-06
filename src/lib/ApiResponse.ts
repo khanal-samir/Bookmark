@@ -3,11 +3,11 @@ export class ApiResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  data?: Document | null;
+  data?: Document | Document[] | null;
 
   constructor(
     statusCode: number,
-    data?: Document | null,
+    data?: Document | Document[] | null,
     message: string = "Success",
   ) {
     this.statusCode = statusCode;
@@ -26,7 +26,10 @@ export class ApiResponse {
     );
   }
   // doesnt need to use new
-  static success(data?: Document | null, message: string = "Success") {
+  static success(
+    data?: Document | Document[] | null,
+    message: string = "Success",
+  ) {
     return new ApiResponse(200, data, message).send();
   }
 

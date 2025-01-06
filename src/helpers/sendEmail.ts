@@ -1,12 +1,12 @@
 import { resend } from "@/lib/resend";
 import VerificationEmail from "../../emails/VerificationEmail";
-import { ApiResponse } from "@/types/ApiResponse";
+import { IApiResponse } from "@/types/apiResponse";
 
 export const sendVerificationEmail = async (
   email: string,
   username: string,
   verifyCode: string,
-): Promise<ApiResponse> => {
+): Promise<IApiResponse> => {
   try {
     await resend.emails.send({
       from: "Bookmark <onboarding@resend.dev>",
