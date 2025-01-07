@@ -10,7 +10,7 @@ export const GET = async (req: Request): Promise<Response> => {
     const userId = result;
     const bookmarks = await BookmarkModel.find({
       userId,
-    });
+    }).sort({ ["createdAt"]: -1 });
 
     if (!bookmarks.length) {
       return ApiResponse.notFound("No bookmarks found");
@@ -32,7 +32,11 @@ export const POST = async (req: Request): Promise<Response> => {
     const userId = result;
     const { title, description, url, isImportant } = await req.json();
 
-    const bookmark = await BookmarkModel.findOne({ title, url, userId });
+    const bookmark = await BookmarkModel.findOne({
+      userId,
+      $or: [{ title }, { url }],
+    });
+
     if (bookmark)
       return ApiResponse.badRequest(
         "Bookmark with similar title or URL already exists",

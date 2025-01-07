@@ -20,15 +20,12 @@ const bookmarkSchema: Schema<Bookmark> = new Schema(
       ref: "User",
     },
     title: {
-      required: [true, "Title is required"],
       type: String,
       index: true,
-      unique: true,
       default: "No title",
     },
     url: {
       required: [true, "URL is required"],
-      unique: true,
       type: String,
       match: [
         /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/,
@@ -37,7 +34,6 @@ const bookmarkSchema: Schema<Bookmark> = new Schema(
     },
     description: {
       type: String,
-      unique: true,
       default: "No Description",
     },
     isImportant: {

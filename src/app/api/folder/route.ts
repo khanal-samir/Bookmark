@@ -11,7 +11,9 @@ export const GET = async (req: Request): Promise<Response> => {
     const userId = result;
     const folders = await FolderModel.find({
       userId,
-    });
+    })
+      .populate("bookmarks")
+      .sort({ ["createdAt"]: -1 });
 
     if (!folders.length) {
       return ApiResponse.notFound("No folders found");

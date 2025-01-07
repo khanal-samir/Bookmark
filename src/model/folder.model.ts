@@ -29,12 +29,9 @@ const folderSchema: Schema<Folder> = new Schema(
       required: [true, "Title is required"],
       type: String,
       index: true,
-      unique: true,
-      default: "No title",
     },
     description: {
       type: String,
-      unique: true,
       default: "No Description",
     },
     isImportant: {
