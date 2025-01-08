@@ -1,25 +1,13 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import About from "@/components/home/About";
+import Hero from "@/components/home/Hero";
 
 export default function Home() {
-  const { data: session } = useSession();
-
   return (
-    <div>
-      {session ? (
-        <div>
-          <p>Signed in as {session.user.username || session.user.name}</p>
-          <button
-            onClick={() => signOut()}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Sign out
-          </button>
-        </div>
-      ) : (
-        <div>Hello</div>
-      )}
+    <div className="flex flex-col gap-6 sm:gap-12">
+      <Hero />
+      <About />
     </div>
   );
 }
