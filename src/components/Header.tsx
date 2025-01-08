@@ -14,9 +14,8 @@ const Header = () => {
   const [isDark, setIsDark] = useState<boolean>(false);
 
   useEffect(() => {
-    const isStoredDark = localStorage.getItem("theme") === "true";
-    setIsDark(isStoredDark);
-    if (isStoredDark) {
+    setIsDark(localStorage.getItem("theme") === "true");
+    if (isDark) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");

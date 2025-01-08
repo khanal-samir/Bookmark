@@ -4,6 +4,7 @@ import AuthProvider from "@/context/AuthProvider";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Toaster } from "@/components/ui/toaster";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,10 +27,9 @@ export default function RootLayout({
       <AuthProvider>
         <body className={`${poppins.variable} font-poppins antialiased py-3`}>
           <Header />
-
           {children}
-
           <Footer />
+          <Toaster />
         </body>
       </AuthProvider>
     </html>
