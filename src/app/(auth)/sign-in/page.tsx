@@ -1,5 +1,5 @@
 "use client";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -18,13 +18,14 @@ import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import google from "../../../../public/icons8-google.svg";
 import Image from "next/image";
-import { LoaderIcon } from "lucide-react";
+import { Eye, EyeOff, LoaderIcon } from "lucide-react";
 import { useState } from "react";
 
 export default function SignInPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleGoogleSignIn = async () => {
     await signIn("google", { callbackUrl: "/" });
@@ -75,8 +76,8 @@ export default function SignInPage() {
   const form = useForm<z.infer<typeof logInSchema>>({
     resolver: zodResolver(logInSchema),
     defaultValues: {
-      identifier: "",
-      password: "",
+      identifier: "JohnDoe@gmail.com",
+      password: "123456",
     },
   });
 
@@ -96,18 +97,37 @@ export default function SignInPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email/Username</FormLabel>
-                  <Input {...field} />
+                  <Input {...field} required />
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               name="password"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
-                  <Input type="password" {...field} />
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      {...field}
+                      required
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="hover:bg-transparent hover:opacity-100 absolute right-1 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
