@@ -85,7 +85,10 @@ const About = () => {
           </p>
         </motion.div>
       </motion.div>
-      <motion.div variants={containerVariants} className="flex flex-col gap-2">
+      <motion.div
+        variants={containerVariants}
+        className="flex flex-col gap-2 mt-2"
+      >
         <motion.h1
           className="text-md sm:text-xl font-bold text-center"
           variants={itemVariants}
@@ -93,7 +96,7 @@ const About = () => {
           Your Bookmarks, Your Way.
         </motion.h1>
         <motion.p
-          className=" text-xs text-muted-foreground md:text-base px-20 text-center font-bold"
+          className=" text-xs text-muted-foreground md:text-base px-8 md:px-20 text-center font-bold"
           variants={itemVariants}
         >
           Effortlessly organize and manage your bookmarks with a system tailored

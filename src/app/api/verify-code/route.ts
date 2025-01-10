@@ -21,7 +21,10 @@ export const POST = async (request: Request): Promise<Response> => {
       user.isVerified = true;
       await user.save();
 
-      return ApiResponse.success(null, "Account verified successfully");
+      return ApiResponse.success(
+        null,
+        "Account verified successfully. Please Sign-in to proceed.",
+      );
     } else if (!isCodeNotExpired) {
       // Code has expired
 

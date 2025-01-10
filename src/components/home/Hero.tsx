@@ -6,6 +6,7 @@ import addFiles from "../../../public/undraw_my-files_yynz.svg";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 const leftContentVariants = {
   hidden: { x: -100, opacity: 0 },
   visible: {
@@ -65,23 +66,32 @@ const Hero = () => {
         >
           {!session ? (
             <>
-              <Button className="bg-blue-500 hover:bg-blue-700 w-24 sm:w-32 h-10 sm:h-12 rounded-xl shadow-md">
-                <span className="font-bold">Signup</span>
-              </Button>
+              <Link href="/sign-up">
+                {" "}
+                <Button className="bg-blue-500 hover:bg-blue-700 w-24 sm:w-32 h-10 sm:h-12 rounded-xl shadow-md">
+                  <span className="font-bold">Signup</span>
+                </Button>
+              </Link>
+              <Link href="/sign-in">
+                {" "}
+                <Button
+                  variant="outline"
+                  className="text-blue-500 border-blue-500 hover:bg-blue-300 w-24 sm:w-32 h-10 sm:h-12 rounded-xl shadow-md"
+                >
+                  <span className="font-bold">Login</span>
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <Link href="/dashboard">
+              {" "}
               <Button
                 variant="outline"
                 className="text-blue-500 border-blue-500 hover:bg-blue-300 w-24 sm:w-32 h-10 sm:h-12 rounded-xl shadow-md"
               >
-                <span className="font-bold">Login</span>
+                Dashboard
               </Button>
-            </>
-          ) : (
-            <Button
-              variant="outline"
-              className="text-blue-500 border-blue-500 hover:bg-blue-300 w-24 sm:w-32 h-10 sm:h-12 rounded-xl shadow-md"
-            >
-              Dashboard
-            </Button>
+            </Link>
           )}
         </motion.div>
       </motion.div>

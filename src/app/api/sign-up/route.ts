@@ -28,7 +28,9 @@ export const POST = async (request: Request): Promise<Response> => {
       } else {
         // not verified
         //update document
+
         const hashedPassword = await bcrypt.hash(password, 10);
+        isExistingUserByEmail.username = username;
         isExistingUserByEmail.password = hashedPassword;
         isExistingUserByEmail.verifyCode = verifyCode;
         isExistingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);

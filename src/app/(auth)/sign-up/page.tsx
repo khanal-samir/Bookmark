@@ -17,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import VerifyToken from "@/components/VerifyToken";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
@@ -31,14 +32,16 @@ const SignUp = () => {
   const [emailMessage, setEmailMessage] = useState("");
   const [emailField, setEmailField] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const [submittedUsername, setSubmittedUsername] = useState("");
   const debounced = useDebounceCallback(setEmailField, 300);
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      username: "JohnDoe",
-      email: "johnDoe@gmail.com",
-      password: "123456",
+      username: "",
+      email: "",
+      password: "",
     },
   });
 
@@ -55,6 +58,8 @@ const SignUp = () => {
           title: "Success",
           description: response.data.message,
         });
+        setSubmittedUsername(data.username);
+        setIsActive(true);
       }
     } catch (error) {
       console.error("Error during sign-up:", error);
@@ -120,7 +125,7 @@ const SignUp = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
-                  <Input {...field} />
+                  <Input {...field} placeholder="JohnDoe" />
 
                   <FormMessage />
                 </FormItem>
@@ -139,6 +144,7 @@ const SignUp = () => {
                       field.onChange(e);
                       debounced(e.target.value);
                     }}
+                    placeholder="JohnDoe@gmail.com"
                   />
                   {debouncedLoading && <Loader2 className="animate-spin" />}
                   {!debouncedLoading && emailMessage && (
@@ -168,6 +174,7 @@ const SignUp = () => {
                       type={showPassword ? "text" : "password"}
                       {...field}
                       required
+                      placeholder="......"
                     />
                     <Button
                       type="button"
@@ -225,6 +232,11 @@ const SignUp = () => {
           </p>
         </div>
       </div>
+      <VerifyToken
+        isActive={isActive}
+        setIsActive={setIsActive}
+        username={submittedUsername}
+      />
     </div>
   );
 };

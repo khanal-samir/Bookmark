@@ -76,8 +76,8 @@ export default function SignInPage() {
   const form = useForm<z.infer<typeof logInSchema>>({
     resolver: zodResolver(logInSchema),
     defaultValues: {
-      identifier: "JohnDoe@gmail.com",
-      password: "123456",
+      identifier: "",
+      password: "",
     },
   });
 
@@ -97,7 +97,7 @@ export default function SignInPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email/Username</FormLabel>
-                  <Input {...field} required />
+                  <Input {...field} required placeholder="JohnDoe@gmail.com" />
                   <FormMessage />
                 </FormItem>
               )}
@@ -114,6 +114,7 @@ export default function SignInPage() {
                       type={showPassword ? "text" : "password"}
                       {...field}
                       required
+                      placeholder="......"
                     />
                     <Button
                       type="button"
