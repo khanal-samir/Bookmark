@@ -47,7 +47,7 @@ const Header = () => {
 
   return (
     <motion.div
-      className="flex justify-between px-10 items-center font-bold overflow-x-hidden"
+      className="flex justify-between px-10 md:px-20  pb:2 md:pb-4 items-center font-bold overflow-x-hidden"
       initial="hidden"
       animate="visible"
       exit="hidden"
@@ -81,7 +81,9 @@ const Header = () => {
             className="flex items-center gap-2 font-xl"
             variants={rightVariants}
           >
-            <motion.p variants={rightVariants}>Dashboard</motion.p>
+            <Link href="/dashboard">
+              <motion.p variants={rightVariants}>Dashboard</motion.p>
+            </Link>
             <LogOut onClick={() => signOut()} className="cursor-pointer" />
           </motion.div>
         ) : (
