@@ -8,41 +8,33 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { Toggle } from "./ui/toggle";
 import { motion } from "framer-motion";
+import { useTheme } from "@/store/theme";
+
+const leftVariants = {
+  hidden: { x: -50, opacity: 0 },
+  visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
+};
+
+const rightVariants = {
+  hidden: { x: 50, opacity: 0 },
+  visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
+};
 
 const Header = () => {
   const { data: session } = useSession();
-  const [isDark, setIsDark] = useState<boolean>(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    setIsDark(localStorage.getItem("theme") === "true");
-    if (isDark) {
+    if (theme === "dark") {
+      // without persist it wont work on refreshing
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("theme", isDark.toString());
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDark]);
+  }, [theme]);
 
   const toggleTheme = () => {
-    setIsDark((prev) => !prev);
-  };
-
-  const leftVariants = {
-    hidden: { x: -50, opacity: 0 },
-    visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
-  };
-
-  const rightVariants = {
-    hidden: { x: 50, opacity: 0 },
-    visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   return (
@@ -73,7 +65,7 @@ const Header = () => {
           aria-label="Toggle Theme"
           onClick={toggleTheme}
         >
-          {isDark ? <Moon /> : <Sun />}
+          {theme === "dark" ? <Moon /> : <Sun />}
         </Toggle>
 
         {session ? (

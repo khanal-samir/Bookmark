@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRight, type LucideIcon } from "lucide-react";
-
+import { usePathname } from "next/navigation";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -18,9 +18,9 @@ export function NavMain({
     title: string;
     href: string;
     icon?: LucideIcon;
-    isActive?: boolean;
   }[];
 }) {
+  const pathname = usePathname();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Gallery</SidebarGroupLabel>
@@ -30,7 +30,10 @@ export function NavMain({
           <Link href={item.href} key={index}>
             {" "}
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip={item.title}>
+              <SidebarMenuButton
+                tooltip={item.title}
+                className={`${pathname === item.href ? "text-blue-500 hover:text-blue-700" : ""}`}
+              >
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>{" "}
                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
