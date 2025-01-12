@@ -27,25 +27,21 @@ const data = {
       title: "Dashboard",
       href: "/dashboard",
       icon: SquareTerminal,
-      isActive: true,
     },
     {
       title: "Bookmarks",
       href: "/bookmarks",
       icon: File,
-      isActive: true,
     },
     {
       title: "Folders",
       href: "/folders",
       icon: Folder,
-      isActive: true,
     },
     {
       title: "Important",
       href: "/important",
       icon: Bookmark,
-      isActive: true,
     },
   ],
 };

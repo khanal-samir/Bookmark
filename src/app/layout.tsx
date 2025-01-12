@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="">
+    <html lang="en">
       <AuthProvider>
         <body className={`${poppins.variable} font-poppins antialiased py-3`}>
           <Header />
