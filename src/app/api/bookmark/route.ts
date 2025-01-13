@@ -68,7 +68,8 @@ export const PATCH = async (req: Request): Promise<Response> => {
   try {
     const result = await getUserId();
     if (result instanceof Response) return result;
-    const { bookmarkId, url, title, description } = await req.json();
+    const { bookmarkId, url, title, description, isImportant } =
+      await req.json();
     const bookmark = await BookmarkModel.findByIdAndUpdate(
       bookmarkId,
       {
@@ -76,6 +77,7 @@ export const PATCH = async (req: Request): Promise<Response> => {
           title,
           url,
           description,
+          isImportant,
         },
       },
       { new: true },

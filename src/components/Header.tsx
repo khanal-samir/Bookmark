@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Bookmark from "../../public/Bookmark.png";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";

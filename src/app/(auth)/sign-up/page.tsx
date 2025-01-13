@@ -87,11 +87,9 @@ const SignUp = () => {
       setEmailMessage("");
       try {
         if (!emailField.trim()) return;
-        const { data } = await axios.get(
+        const { data } = await axios.get<IApiResponse>(
           `api/checkunique-email?email=${emailField}`,
         );
-        console.log(data);
-
         setEmailMessage(data.message);
       } catch (error) {
         const axiosError = error as AxiosError<IApiResponse>;

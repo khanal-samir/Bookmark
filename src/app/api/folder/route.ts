@@ -60,12 +60,13 @@ export const PATCH = async (req: Request): Promise<Response> => {
     const result = await getUserId();
     if (result instanceof Response) return result;
     const userId = result;
-    const { folderId, title, description } = await req.json();
+    const { folderId, title, description, isImportant } = await req.json();
     const folder = await FolderModel.findOneAndUpdate(
       { userId, _id: folderId },
       {
         title,
         description,
+        isImportant,
       },
       {
         new: true,
