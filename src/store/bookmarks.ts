@@ -19,11 +19,20 @@ interface UpdateBookmarkInput {
   isImportant?: boolean;
 }
 
+export interface ISingleBookmark {
+  _id: string;
+  title: string;
+  description: string;
+  url: string;
+  isImportant: boolean;
+  updatedAt: Date;
+  createdAt: Date;
+}
 interface IBookmark {
-  bookmarks: IApiResponse["data"][];
+  bookmarks: Array<Bookmark>;
   loading: boolean;
   error: string | null;
-  addBookmark: (data: AddBookmarkInput) => Promise<void>;
+  addBookmark: (data: AddBookmarkInput) => Promise<boolean>;
   deleteBookmark: (id: string) => Promise<void>;
   updateBookmark: (data: UpdateBookmarkInput) => Promise<void>;
   fetchBookmarks: () => Promise<void>;
@@ -47,12 +56,14 @@ const useBookmarkStore = create<IBookmark>()(
           state.bookmarks.push(response.data.data);
           state.loading = false;
         });
+        return true;
       } catch (error) {
         const axiosError = error as AxiosError<IApiResponse>;
         set((state) => {
           state.error = axiosError.message || "Failed to add bookmark.";
           state.loading = false;
         });
+        return false;
       }
     },
 

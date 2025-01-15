@@ -5,7 +5,7 @@ import { File, Bookmark, Folder, SquareTerminal } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
 import { NavUser } from "@/components/sidebar/nav-user";
-import { AddBookmark } from "@/components/sidebar/AddBookmark";
+import { NavHeader } from "@/components/sidebar/nav-header";
 import {
   Sidebar,
   SidebarContent,
@@ -52,7 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <AddBookmark />
+        <NavHeader />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

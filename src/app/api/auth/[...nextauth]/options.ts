@@ -8,12 +8,10 @@ import UserModel from "@/model/user.model";
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      //google
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
-      // credentials
       id: "credentials",
       name: "Credentials",
       credentials: {
@@ -21,7 +19,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any): Promise<any> {
-        //signin controller
         await dbConnect();
         try {
           const user = await UserModel.findOne({
@@ -30,18 +27,28 @@ export const authOptions: NextAuthOptions = {
               { username: credentials.identifier },
             ],
           });
+
           if (!user) {
             throw new Error("No user found with this email");
           }
+
           if (!user.isVerified) {
             throw new Error("Please verify your account before logging in");
           }
+
           const isPasswordCorrect = await bcrypt.compare(
             credentials.password,
             user.password,
           );
+
           if (isPasswordCorrect) {
-            return user;
+            // Convert MongoDB document to a plain object and ensure _id is a string
+            return {
+              _id: user._id?.toString(),
+              email: user.email,
+              username: user.username,
+              isVerified: user.isVerified,
+            };
           } else {
             throw new Error("Incorrect password");
           }
@@ -55,26 +62,19 @@ export const authOptions: NextAuthOptions = {
     async signIn({ account, profile }) {
       await dbConnect();
 
-      if (account && account.provider === "google") {
+      if (account?.provider === "google" && profile?.email) {
         try {
-          // Check if user exists in the database
-          if (!profile) {
-            throw new Error("Profile is undefined");
-          }
-
-          //find using email
           let existingUser = await UserModel.findOne({ email: profile.email });
-          //if not user create
 
           if (!existingUser) {
             existingUser = await UserModel.create({
               email: profile.email,
-              username: profile.name ? profile.name : "", // Generate a username
-              isVerified: true, // Automatically verify Google users
+              username: profile.name ?? "",
+              isVerified: true,
               oAuthProvider: true,
             });
           }
-          // Ensure the user is marked as verified
+
           existingUser.isVerified = true;
           await existingUser.save();
           return true;
@@ -86,17 +86,27 @@ export const authOptions: NextAuthOptions = {
 
       return true;
     },
-    // jwt
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
-        token._id = user._id?.toString();
-        token.isVerified = user.isVerified;
-        token.username = user.username;
+        // For Google Sign In
+        if (account?.provider === "google") {
+          const dbUser = await UserModel.findOne({ email: user.email });
+          if (dbUser) {
+            token._id = dbUser._id?.toString();
+            token.isVerified = dbUser.isVerified;
+            token.username = dbUser.username;
+          }
+        } else {
+          // For Credentials Sign In
+          token._id = user._id;
+          token.isVerified = user.isVerified;
+          token.username = user.username;
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      if (token) {
+      if (token && session.user) {
         session.user._id = token._id;
         session.user.isVerified = token.isVerified;
         session.user.username = token.username;

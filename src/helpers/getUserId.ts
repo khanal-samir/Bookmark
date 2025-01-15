@@ -8,7 +8,10 @@ const getUser = async (): Promise<mongoose.Types.ObjectId | Response> => {
   try {
     await dbConnect();
     const session = await getServerSession(authOptions);
+    console.log("session", session);
+
     const user: User = session?.user as User;
+
     if (!session || !user) {
       return ApiResponse.unauthorized();
     }
