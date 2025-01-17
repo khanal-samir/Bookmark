@@ -29,13 +29,13 @@ export interface ISingleBookmark {
   createdAt: Date;
 }
 interface IBookmark {
-  bookmarks: Array<Bookmark>;
+  bookmarks: Array<ISingleBookmark>;
   loading: boolean;
   error: string | null;
   addBookmark: (data: AddBookmarkInput) => Promise<boolean>;
-  deleteBookmark: (id: string) => Promise<void>;
-  updateBookmark: (data: UpdateBookmarkInput) => Promise<void>;
-  fetchBookmarks: () => Promise<void>;
+  deleteBookmark: (id: string) => Promise<boolean>;
+  updateBookmark: (data: UpdateBookmarkInput) => Promise<boolean>;
+  fetchBookmarks: () => Promise<boolean>;
 }
 
 const useBookmarkStore = create<IBookmark>()(
@@ -53,37 +53,48 @@ const useBookmarkStore = create<IBookmark>()(
       try {
         const response = await axios.post<IApiResponse>("/api/bookmark", data);
         set((state) => {
-          state.bookmarks.push(response.data.data);
+          state.bookmarks.unshift(response.data.data);
           state.loading = false;
         });
         return true;
       } catch (error) {
         const axiosError = error as AxiosError<IApiResponse>;
+
         set((state) => {
-          state.error = axiosError.message || "Failed to add bookmark.";
+          state.error =
+            axiosError.response?.data.message || "Failed to add bookmark.";
           state.loading = false;
         });
         return false;
       }
     },
 
-    deleteBookmark: async (id) => {
+    deleteBookmark: async (bookmarkId) => {
       set((state) => {
         state.loading = true;
         state.error = null;
       });
       try {
-        await axios.delete("/api/bookmark", { data: { id } });
+        const response = await axios.delete("/api/bookmark", {
+          data: { bookmarkId },
+        });
+        console.log(response);
+
         set((state) => {
           state.loading = false;
-          state.bookmarks = state.bookmarks.filter((b) => b._id !== id);
+          state.bookmarks = state.bookmarks.filter((b) => b._id !== bookmarkId);
         });
+        return true;
       } catch (error) {
         const axiosError = error as AxiosError<IApiResponse>;
+        console.log(axiosError);
+
         set((state) => {
-          state.error = axiosError.message || "Failed to delete bookmark.";
+          state.error =
+            axiosError.response?.data.message || "Failed to delete bookmark.";
           state.loading = false;
         });
+        return false;
       }
     },
     updateBookmark: async (data) => {
@@ -102,12 +113,17 @@ const useBookmarkStore = create<IBookmark>()(
             state.bookmarks[index] = response.data.data;
           }
         });
+        return true;
       } catch (error) {
         const axiosError = error as AxiosError<IApiResponse>;
+        console.log(axiosError);
+
         set((state) => {
-          state.error = axiosError.message || "Failed to update bookmark.";
+          state.error =
+            axiosError.response?.data.message || "Failed to update bookmark.";
           state.loading = false;
         });
+        return false;
       }
     },
 
@@ -123,12 +139,15 @@ const useBookmarkStore = create<IBookmark>()(
           state.bookmarks = response.data.data;
           state.loading = false;
         });
+        return true;
       } catch (error) {
         const axiosError = error as AxiosError<IApiResponse>;
         set((state) => {
-          state.error = axiosError.message || "Failed to fetch bookmarks.";
+          state.error =
+            axiosError.response?.data.message || "Failed to fetch bookmarks.";
           state.loading = false;
         });
+        return false;
       }
     },
   })),

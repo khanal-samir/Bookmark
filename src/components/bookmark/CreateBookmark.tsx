@@ -33,7 +33,7 @@ type Open = {
 };
 
 const CreateBookmark = ({ isOpen, setIsOpen }: Open) => {
-  const { addBookmark } = useBookmarkStore();
+  const { addBookmark, error } = useBookmarkStore();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof addBookmarkSchema>>({
@@ -58,9 +58,10 @@ const CreateBookmark = ({ isOpen, setIsOpen }: Open) => {
       setIsOpen(false);
       form.reset();
     } else {
+      const errorMessage = error;
       toast({
         title: "Error",
-        description: "Failed to create bookmark",
+        description: errorMessage,
         variant: "destructive",
       });
     }

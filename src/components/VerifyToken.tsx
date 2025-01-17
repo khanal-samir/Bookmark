@@ -48,9 +48,6 @@ const VerifyToken = ({
   const handleVerification = async (data: z.infer<typeof VerifySchema>) => {
     setLoading(true);
     try {
-      console.log(data);
-      console.log(username);
-
       const response = await axios.post<IApiResponse>("/api/verify-code", {
         username,
         code: data.code,

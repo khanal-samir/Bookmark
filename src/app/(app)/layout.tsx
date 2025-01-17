@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import useBookmarkStore from "@/store/bookmarks";
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
@@ -25,6 +27,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { data: session } = useSession();
   const pathname = usePathname();
   const pageName = pathname.split("/")[1].toUpperCase();
+  const { fetchBookmarks, bookmarks } = useBookmarkStore();
+
+  useEffect(() => {
+    fetchBookmarks();
+  }, []);
+  console.log(bookmarks);
   return (
     <SidebarProvider>
       <div className="flex w-full">

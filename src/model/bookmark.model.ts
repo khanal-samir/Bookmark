@@ -22,7 +22,6 @@ const bookmarkSchema: Schema<Bookmark> = new Schema(
     title: {
       type: String,
       index: true,
-      default: "No title",
     },
     url: {
       required: [true, "URL is required"],
@@ -34,7 +33,6 @@ const bookmarkSchema: Schema<Bookmark> = new Schema(
     },
     description: {
       type: String,
-      default: "No Description",
     },
     isImportant: {
       type: Boolean,

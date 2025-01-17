@@ -1,6 +1,7 @@
 import BookmarkModel from "@/model/bookmark.model";
 import getUserId from "@/helpers/getUserId";
 import { ApiResponse } from "@/lib/ApiResponse";
+import mongoose from "mongoose";
 export const GET = async (req: Request): Promise<Response> => {
   try {
     const result = await getUserId();
@@ -36,8 +37,7 @@ export const POST = async (req: Request): Promise<Response> => {
       userId,
       $or: [{ title }, { url }],
     });
-
-    if (bookmark)
+    if (bookmark && bookmark.title !== "")
       return ApiResponse.badRequest(
         "Bookmark with similar title or URL already exists",
       );
@@ -68,8 +68,32 @@ export const PATCH = async (req: Request): Promise<Response> => {
   try {
     const result = await getUserId();
     if (result instanceof Response) return result;
+    const userId = result;
+
     const { bookmarkId, url, title, description, isImportant } =
       await req.json();
+
+    const existingBookmark = await BookmarkModel.findOne({
+      $and: [
+        { userId: userId },
+        {
+          $or: [{ title: title }, { url: url }],
+        },
+      ],
+    });
+
+    const id = new mongoose.Types.ObjectId(bookmarkId);
+
+    if (
+      existingBookmark &&
+      !(existingBookmark._id as mongoose.Types.ObjectId).equals(id) && // Changed this line
+      existingBookmark?.title !== ""
+    ) {
+      return ApiResponse.error(
+        "Bookmark with similar title or url already exists",
+      );
+    }
+
     const bookmark = await BookmarkModel.findByIdAndUpdate(
       bookmarkId,
       {
@@ -82,37 +106,12 @@ export const PATCH = async (req: Request): Promise<Response> => {
       },
       { new: true },
     );
-    console.log(bookmark);
+
     if (!bookmark) return ApiResponse.error("Error while updating bookmark");
     return ApiResponse.success(bookmark, "Bookmark updated successfully");
   } catch (error: any) {
     console.log("Something went wrong while updating bookmark", error.message);
     return ApiResponse.error("Something went wrong while updating bookmark");
-  }
-};
-export const PUT = async (req: Request): Promise<Response> => {
-  try {
-    const result = await getUserId();
-    if (result instanceof Response) return result;
-    const { bookmarkId, isImportant } = await req.json();
-    const bookmark = await BookmarkModel.findByIdAndUpdate(
-      bookmarkId,
-      {
-        $set: {
-          isImportant,
-        },
-      },
-      { new: true },
-    );
-    console.log(bookmark);
-    if (!bookmark)
-      return ApiResponse.error("Error while updating isImportant for bookmark");
-    return ApiResponse.success(bookmark, "Bookmark updated successfully");
-  } catch (error: any) {
-    console.log("Something went wrong while updating bookmark", error.message);
-    return ApiResponse.error(
-      "Something went wrong while updating isImportant for bookmark",
-    );
   }
 };
 
