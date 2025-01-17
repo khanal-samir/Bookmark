@@ -61,7 +61,7 @@ const CreateBookmark = ({ isOpen, setIsOpen }: Open) => {
       const errorMessage = error;
       toast({
         title: "Error",
-        description: errorMessage,
+        description: errorMessage || "Error Creating bookmark try again",
         variant: "destructive",
       });
     }

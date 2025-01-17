@@ -88,6 +88,13 @@ export default function Bookmark(bookmark: ISingleBookmark) {
     form.reset();
   };
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(bookmark.url);
+    toast({
+      title: "URL Copied!",
+      description: "URL has been copied to clipboard.",
+    });
+  };
   return (
     <Card className="w-[350px]">
       {isUpdate ? (
@@ -217,7 +224,12 @@ export default function Bookmark(bookmark: ISingleBookmark) {
             </CardTitle>
             <CardDescription>{bookmark.description}</CardDescription>
           </CardHeader>
-          <CardContent>{bookmark.url}</CardContent>
+          <CardContent
+            className="text-blue-600 hover:underline cursor-pointer transition-transform hover:scale-90"
+            onClick={copyToClipboard}
+          >
+            {bookmark.url}
+          </CardContent>
           <CardFooter className="flex justify-between">
             <p className="text-muted-foreground text-sm">
               {new Date(bookmark.createdAt).toLocaleDateString()}
