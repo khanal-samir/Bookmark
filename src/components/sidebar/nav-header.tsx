@@ -18,14 +18,17 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import CreateBookmark from "../bookmark/CreateBookmark";
+import CreateFolder from "../folder/CreateFolder";
 
 export function NavHeader() {
   const { isMobile } = useSidebar();
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isFolderOpen, setIsFolderOpen] = React.useState(false);
 
   return (
     <div>
       <CreateBookmark isOpen={isOpen} setIsOpen={setIsOpen} />
+      <CreateFolder isOpen={isFolderOpen} setIsOpen={setIsFolderOpen} />
       <SidebarMenu>
         <SidebarMenuItem>
           <DropdownMenu>
@@ -48,7 +51,7 @@ export function NavHeader() {
               </DropdownMenuLabel>
 
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="gap-2 p-2">
+              <DropdownMenuItem className=" flex flex-col gap-2 ">
                 <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                   <Plus
                     className="size-4 cursor-pointer"
@@ -57,6 +60,15 @@ export function NavHeader() {
                 </div>
                 <div className="font-medium text-muted-foreground">
                   Add Bookmark
+                </div>
+                <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                  <Plus
+                    className="size-4 cursor-pointer"
+                    onClick={() => setIsFolderOpen(true)}
+                  />
+                </div>
+                <div className="font-medium text-muted-foreground">
+                  Add Folder
                 </div>
               </DropdownMenuItem>
             </DropdownMenuContent>

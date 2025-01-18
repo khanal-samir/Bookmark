@@ -23,8 +23,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
-import { addBookmarkSchema } from "@/schemas/bookmarkSchema";
-import useBookmarkStore from "@/store/bookmarks";
+import { addFolderSchema } from "@/schemas/folderSchema";
+import useFolderStore from "@/store/folder";
 import { useToast } from "@/hooks/use-toast";
 
 type Open = {
@@ -32,28 +32,25 @@ type Open = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CreateBookmark = ({ isOpen, setIsOpen }: Open) => {
-  const { addBookmark, error } = useBookmarkStore();
+const CreateFolder = ({ isOpen, setIsOpen }: Open) => {
+  const { addFolder, error } = useFolderStore();
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof addBookmarkSchema>>({
-    resolver: zodResolver(addBookmarkSchema),
+  const form = useForm<z.infer<typeof addFolderSchema>>({
+    resolver: zodResolver(addFolderSchema),
     defaultValues: {
       title: "",
       description: "",
-      url: "",
       isImportant: false,
     },
   });
 
-  const handleCreateBookmark = async (
-    data: z.infer<typeof addBookmarkSchema>,
-  ) => {
-    const response = await addBookmark(data);
+  const handleCreateFolder = async (data: z.infer<typeof addFolderSchema>) => {
+    const response = await addFolder(data);
     if (response) {
       toast({
         title: "Success",
-        description: "Bookmark created successfully",
+        description: "Folder created successfully",
       });
       setIsOpen(false);
       form.reset();
@@ -61,7 +58,7 @@ const CreateBookmark = ({ isOpen, setIsOpen }: Open) => {
       const errorMessage = error;
       toast({
         title: "Error",
-        description: errorMessage || "Error Creating bookmark try again",
+        description: errorMessage || "Error Creating folder try again",
         variant: "destructive",
       });
     }
@@ -72,14 +69,14 @@ const CreateBookmark = ({ isOpen, setIsOpen }: Open) => {
       <DialogTrigger></DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a bookmark</DialogTitle>
+          <DialogTitle>Create a Folder</DialogTitle>
           <DialogDescription>
-            Create your bookmarks and manage them.
+            Create your folder to manage bookmarks.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleCreateBookmark)}
+            onSubmit={form.handleSubmit(handleCreateFolder)}
             className="space-y-4"
           >
             <FormField
@@ -91,7 +88,7 @@ const CreateBookmark = ({ isOpen, setIsOpen }: Open) => {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Enter bookmark title"
+                      placeholder="Enter Folder title"
                       required
                     />
                   </FormControl>
@@ -110,25 +107,6 @@ const CreateBookmark = ({ isOpen, setIsOpen }: Open) => {
                     <Input
                       {...field}
                       placeholder="Enter bookmark description"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>URL</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="url"
-                      placeholder="https://example.com"
-                      required
                     />
                   </FormControl>
                   <FormMessage />
@@ -168,4 +146,4 @@ const CreateBookmark = ({ isOpen, setIsOpen }: Open) => {
   );
 };
 
-export default CreateBookmark;
+export default CreateFolder;

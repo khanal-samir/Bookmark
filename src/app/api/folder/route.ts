@@ -80,33 +80,6 @@ export const PATCH = async (req: Request): Promise<Response> => {
   }
 };
 
-export const PUT = async (req: Request): Promise<Response> => {
-  try {
-    const result = await getUserId();
-    if (result instanceof Response) return result;
-    const userId = result;
-    const { folderId, isImportant } = await req.json();
-    const folder = await FolderModel.findOneAndUpdate(
-      { userId, _id: folderId },
-      {
-        isImportant,
-      },
-      {
-        new: true,
-      },
-    );
-    if (!folder) return ApiResponse.error("Error while updating folder");
-    return ApiResponse.success(
-      folder,
-      "Isimportant for folder updated successfully",
-    );
-  } catch (error: any) {
-    console.log("Something went wrong while updating folder", error.message);
-    return ApiResponse.error(
-      "Something went wrong while updating isImportant for folder",
-    );
-  }
-};
 export const DELETE = async (req: Request): Promise<Response> => {
   try {
     const result = await getUserId();

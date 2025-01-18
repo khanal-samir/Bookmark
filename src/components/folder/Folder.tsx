@@ -7,12 +7,6 @@ import {
   FormMessage,
   FormControl,
 } from "@/components/ui/form";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -36,35 +30,34 @@ import { Star } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import type { ISingleBookmark } from "@/store/bookmarks";
-import useBookmarkStore from "@/store/bookmarks";
 import { useForm } from "react-hook-form";
-import { updateBookmarkSchema } from "@/schemas/bookmarkSchema";
+
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "../ui/checkbox";
+import useFolderStore, { ISingleFolder } from "@/store/folder";
+import { updateFolderSchema } from "@/schemas/folderSchema";
 
-export default function Bookmark(bookmark: ISingleBookmark) {
-  const { updateBookmark, deleteBookmark, error } = useBookmarkStore();
+export default function Folder(folder: ISingleFolder) {
+  const { updateFolder, deleteFolder, error } = useFolderStore();
   const [isUpdate, setIsUpdate] = React.useState(false);
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof updateBookmarkSchema>>({
-    resolver: zodResolver(updateBookmarkSchema),
+  const form = useForm<z.infer<typeof updateFolderSchema>>({
+    resolver: zodResolver(updateFolderSchema),
     defaultValues: {
-      bookmarkId: bookmark._id,
-      description: bookmark.description,
-      isImportant: bookmark.isImportant,
-      title: bookmark.title,
-      url: bookmark.url,
+      folderId: folder._id,
+      description: folder.description,
+      isImportant: folder.isImportant,
+      title: folder.title,
     },
   });
 
   const handleDeleteBookmark = async () => {
-    const response = await deleteBookmark(bookmark._id);
+    const response = await deleteFolder(folder._id);
     if (response) {
       toast({
         title: "Success",
-        description: "Bookmark Deleted successfully",
+        description: "Folder Deleted successfully",
       });
     } else {
       const errorMessage = error;
@@ -76,18 +69,18 @@ export default function Bookmark(bookmark: ISingleBookmark) {
     }
   };
 
-  const handleUpdate = async (data: z.infer<typeof updateBookmarkSchema>) => {
-    const response = await updateBookmark(data);
+  const handleUpdate = async (data: z.infer<typeof updateFolderSchema>) => {
+    const response = await updateFolder(data);
     if (response) {
       toast({
         title: "Success",
-        description: "Bookmark Updated successfully",
+        description: "Folder Updated successfully",
       });
     } else {
       const errorMessage = error;
       toast({
         title: "Error",
-        description: errorMessage || "Error updating Bookmark",
+        description: errorMessage || "Error updating Folder",
         variant: "destructive",
       });
     }
@@ -95,15 +88,8 @@ export default function Bookmark(bookmark: ISingleBookmark) {
     form.reset();
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(bookmark.url);
-    toast({
-      title: "URL Copied!",
-      description: "URL has been copied to clipboard.",
-    });
-  };
   return (
-    <Card className="w-[350px] transition-transform hover:scale-105">
+    <Card className="w-[350px] transition-transform hover:scale-105 cursor-pointer">
       {isUpdate ? (
         <Form {...form}>
           <form
@@ -153,25 +139,6 @@ export default function Bookmark(bookmark: ISingleBookmark) {
 
               <FormField
                 control={form.control}
-                name="url"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm font-semibold">URL</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="url"
-                        className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="https://example.com"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-xs text-red-500" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
                 name="isImportant"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center space-x-2 space-y-0">
@@ -212,7 +179,7 @@ export default function Bookmark(bookmark: ISingleBookmark) {
         <div>
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
-              {bookmark.title}{" "}
+              {folder.title}{" "}
               <DropdownMenu>
                 <DropdownMenuTrigger>...</DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -229,26 +196,16 @@ export default function Bookmark(bookmark: ISingleBookmark) {
                 </DropdownMenuContent>
               </DropdownMenu>
             </CardTitle>
-            <CardDescription>{bookmark.description}</CardDescription>
+            <CardDescription>{folder.description}</CardDescription>
           </CardHeader>
-          <CardContent
-            className="text-blue-600 w-full hover:underline cursor-pointer"
-            onClick={copyToClipboard}
-          >
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger> {bookmark.url}</TooltipTrigger>
-                <TooltipContent>
-                  <p>Add to clipboard</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          <CardContent className="text-blue-600 w-full hover:underline cursor-pointer">
+            {`${folder.bookmarks.length} bookmarks`}
           </CardContent>
           <CardFooter className="flex justify-between">
             <p className="text-muted-foreground text-sm">
-              {new Date(bookmark.createdAt).toLocaleDateString()}
+              {new Date(folder.createdAt).toLocaleDateString()}
             </p>
-            {bookmark.isImportant && <Star />}
+            {folder.isImportant && <Star />}
           </CardFooter>
         </div>
       )}

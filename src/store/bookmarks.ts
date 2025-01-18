@@ -75,10 +75,9 @@ const useBookmarkStore = create<IBookmark>()(
         state.error = null;
       });
       try {
-        const response = await axios.delete("/api/bookmark", {
+        await axios.delete("/api/bookmark", {
           data: { bookmarkId },
         });
-        console.log(response);
 
         set((state) => {
           state.loading = false;
