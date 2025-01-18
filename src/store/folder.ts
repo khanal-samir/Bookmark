@@ -34,7 +34,7 @@ interface IFolder {
   fetchFolders: () => Promise<boolean>;
   addBookmarks(data: {
     folderId: string;
-    bookmarkId: string;
+    bookmarkIds: Array<string>;
   }): Promise<boolean>;
   deleteBookmarks(data: {
     folderId: string;
@@ -158,7 +158,7 @@ const useFolderStore = create<IFolder>()(
       });
       try {
         const response = await axios.post(`/api/add-bookmarks`, {
-          bookmarkId: data.bookmarkId,
+          bookmarkIds: data.bookmarkIds,
           folderId: data.folderId,
         });
         set((state) => {

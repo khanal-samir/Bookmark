@@ -36,6 +36,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "../ui/checkbox";
 import useFolderStore, { ISingleFolder } from "@/store/folder";
 import { updateFolderSchema } from "@/schemas/folderSchema";
+import Link from "next/link";
 
 export default function Folder(folder: ISingleFolder) {
   const { updateFolder, deleteFolder, error } = useFolderStore();
@@ -199,7 +200,10 @@ export default function Folder(folder: ISingleFolder) {
             <CardDescription>{folder.description}</CardDescription>
           </CardHeader>
           <CardContent className="text-blue-600 w-full hover:underline cursor-pointer">
-            {`${folder.bookmarks.length} bookmarks`}
+            <Link href={`/folders/${folder._id}`}>
+              {" "}
+              ${folder.bookmarks.length} bookmarks{" "}
+            </Link>
           </CardContent>
           <CardFooter className="flex justify-between">
             <p className="text-muted-foreground text-sm">

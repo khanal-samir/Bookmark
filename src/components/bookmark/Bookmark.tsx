@@ -42,11 +42,14 @@ import { useForm } from "react-hook-form";
 import { updateBookmarkSchema } from "@/schemas/bookmarkSchema";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "../ui/checkbox";
+import { usePathname } from "next/navigation";
 
 export default function Bookmark(bookmark: ISingleBookmark) {
   const { updateBookmark, deleteBookmark, error } = useBookmarkStore();
   const [isUpdate, setIsUpdate] = React.useState(false);
   const { toast } = useToast();
+  const pathname = usePathname();
+  console.log(pathname);
 
   const form = useForm<z.infer<typeof updateBookmarkSchema>>({
     resolver: zodResolver(updateBookmarkSchema),
