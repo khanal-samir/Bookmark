@@ -202,7 +202,7 @@ export default function Folder(folder: ISingleFolder) {
           <CardContent className="text-blue-600 w-full hover:underline cursor-pointer">
             <Link href={`/folders/${folder._id}`}>
               {" "}
-              ${folder.bookmarks.length} bookmarks{" "}
+              {folder.bookmarks.length} bookmarks{" "}
             </Link>
           </CardContent>
           <CardFooter className="flex justify-between">

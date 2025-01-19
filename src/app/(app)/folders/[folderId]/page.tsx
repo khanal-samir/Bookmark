@@ -43,9 +43,9 @@ const Folderid = () => {
     <div className="grid grid-cols-1 lg:grid-cols-3 my-6 mx-auto gap-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl">Add New Folder</CardTitle>
+          <CardTitle className="text-xl">Add Bookmark to folder</CardTitle>
           <CardDescription>
-            Click the icon below to add a new Folder
+            Click the icon below to add a new Bookmark in the folder
           </CardDescription>
         </CardHeader>
         <CardContent
